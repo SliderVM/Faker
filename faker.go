@@ -4,6 +4,7 @@ import (
 	"github.com/google/uuid"
 	"math/rand"
 	"strconv"
+	"time"
 )
 
 // GenerateUUID - сгенерировать uuid
@@ -13,10 +14,12 @@ func GenerateUUID() string {
 
 // GenerateSnils - сгенерировать СНИЛС персоны
 func GenerateSnils() string{	
+	s1 := rand.NewSource(time.Now().UnixNano())
+    r1 := rand.New(s1)
 	var snils string
 	var sum int
 	for i := 9; i > 0; i-- {
-		n := strconv.FormatInt(rand.Int63n(9), 10)
+		n := strconv.FormatInt(r1.Int63n(9), 10)
 		snils += n
 		c, _ := strconv.ParseInt(string(n), 10, 32)		
 		sum = sum + (int(c) * i)
