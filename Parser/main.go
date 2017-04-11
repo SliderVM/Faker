@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"strings"
+	"io/ioutil"
 )
 
 func main() {
@@ -18,7 +19,8 @@ func main() {
 	}
 	// automatically call Close() at the end of current method
 	defer file.Close()
-
+	
+	/*
 	fileSurname, err := os.Create("../Data/Surname.csv")
 	if err != nil {
 		fmt.Println("Error:", err)
@@ -46,9 +48,12 @@ func main() {
 		return
 	}
 	defer filePhone.Close()
+	*/
 
 	reader := csv.NewReader(file)
-	reader.Comma = ';'
+	reader.Comma = ';'	
+
+	/*
 	writerSurname := csv.NewWriter(fileSurname)
 	writerSurname.Comma = ';'
 	writerName := csv.NewWriter(fileName)
@@ -62,7 +67,7 @@ func main() {
 	defer writerName.Flush()
 	defer writerPatronamic.Flush()
 	defer writerPhone.Flush()
-
+	*/
 	var surnames []string
 	var names []string
 	var patronamics []string
@@ -86,6 +91,21 @@ func main() {
 		phones = append(phones, record[1])
 	}
 
+	read, err := ioutil.ReadFile("../Data/data.go")
+	if err != nil {
+			panic(err)
+	}	
+
+	newContents := strings.Replace(string(read), "/*surname*/", getString(surnames), -1)
+	newContents = strings.Replace(newContents, "/*name*/", getString(names), -1)
+	newContents = strings.Replace(newContents, "/*patronamic*/", getString(patronamics), -1)
+	newContents = strings.Replace(newContents, "/*phone*/", getString(phones), -1)
+	err = ioutil.WriteFile("../Data/data.go", []byte(newContents), 0)
+	if err != nil {
+			panic(err)
+	}
+
+	/*
 	err = writerSurname.Write(surnames)
 	if err != nil {
 		fmt.Println("Error:", err)
@@ -106,4 +126,13 @@ func main() {
 		fmt.Println("Error:", err)
 		return
 	}
+	*/
+}
+
+func getString(str []string) string{
+	var r string
+	for _, v := range str{
+		r += `"` + v + `",`
+	}
+	return r
 }

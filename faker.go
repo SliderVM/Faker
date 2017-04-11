@@ -1,14 +1,16 @@
 package faker
 
 import (
-	"encoding/csv"
-	"fmt"
+	
+	
 	"github.com/google/uuid"
-	"io"
+	
 	"math/rand"
-	"os"
+	
 	"strconv"
-	"time"
+	"time"	
+	"github.com/SliderVM/Faker/Data"
+	
 )
 
 var surnames []string
@@ -16,11 +18,19 @@ var names []string
 var patronamics []string
 var phones []string
 
-func init() {
+func init() {	
+	d := data.D
+	surnames = d.Surnames
+	names = d.Names
+	patronamics = d.Patronamics
+	phones = d.Phones
+	rand.Seed(time.Now().UnixNano())
+	/*
 	var err error
 	surnames, err = loadDate("Surname.csv")
 	if err != nil {
 		fmt.Println("Error:", err)
+		fmt.Println(os.Getenv("GOPATH"))
 		return
 	}
 	names, err = loadDate("Name.csv")
@@ -38,10 +48,12 @@ func init() {
 		fmt.Println("Error:", err)
 		return
 	}
+	*/	
 }
 
+/*
 func loadDate(fileName string) ([]string, error) {
-	file, err := os.Open("Data/" + fileName)
+	file, err := os.Open(os.Getenv("GOPATH") + "github.com/SliderVM/Faker/Data/" + fileName)
 	if err != nil {
 		// err is printable
 		// elements passed are separated by space automatically
@@ -71,6 +83,7 @@ func loadDate(fileName string) ([]string, error) {
 
 	return res, err
 }
+*/
 
 // GenerateUUID - сгенерировать uuid
 func GenerateUUID() string {
@@ -78,20 +91,22 @@ func GenerateUUID() string {
 }
 
 // GenerateSnils - сгенерировать СНИЛС персоны
-func GenerateSnils() string {
-	s1 := rand.NewSource(time.Now().UnixNano())
-	r1 := rand.New(s1)
+func GenerateSnils() string {	
 	var snils string
 	var sum int
 	for i := 9; i > 0; i-- {
-		n := strconv.FormatInt(r1.Int63n(9), 10)
+		n := strconv.FormatInt(rand.Int63n(9), 10)
 		snils += n
 		c, _ := strconv.ParseInt(string(n), 10, 32)
 		sum = sum + (int(c) * i)
 	}
 
 	checkSum := getCheckSum4Snils(sum)
+	
 	snils += checkSum
+	
+	seed, _ := strconv.ParseInt(snils,10,64)	
+	rand.Seed(seed)
 
 	return snils
 }
@@ -107,6 +122,11 @@ func getCheckSum4Snils(sum int) string {
 	if sum > 101 {
 		res = getCheckSum4Snils(sum % 101)
 	}
+
+	if len(res) < 2{
+		res = "0" + res
+	}
+
 	return res
 }
 

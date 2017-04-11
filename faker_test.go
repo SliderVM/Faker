@@ -2,7 +2,7 @@ package faker
 
 import (
 	"strconv"
-	"testing"
+	"testing"	
 )
 
 func TestGenerateSnils(t *testing.T) {
@@ -29,6 +29,20 @@ func TestGenerateSnils(t *testing.T) {
 	if _sum != sum1 {
 		t.Error("Неврная контрольная сумма СНИЛС = "+snils+", ожидалос "+strconv.FormatInt(int64(sum), 10)+" получено ", sum1)
 	}
+
+	var s []string 
+	for i := 0; i < 10; i++ {
+		s = append(s,GenerateSnils())
+	}
+
+	for i := 0; i < 10; i++ {
+		for j := i+1; j < 10; j++ {
+			if s[i] == s[j]	{
+				t.Error("Сгенерированы одинаковые СНИЛС i = " +strconv.Itoa(i)+ " j = "+strconv.Itoa(j)+" " +s[i]+" = "+s[j])
+			}
+		}
+		
+	}
 }
 
 func TestGetSurname(t *testing.T) {
@@ -45,6 +59,7 @@ func TestGetSurname(t *testing.T) {
 			ex = true
 		}
 	}
+
 	if !ex {
 		t.Error("Фамилия получена не верно, вернулось значение", surname)
 	}
