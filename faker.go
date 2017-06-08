@@ -137,23 +137,44 @@ func GetSurname() string {
 	return surnames[r1.Intn(len(surnames)-1)]
 }
 
-// GetName - сгенерировать фамилию
+// GetName - сгенерировать имя
 func GetName() string {
 	s1 := rand.NewSource(time.Now().UnixNano())
 	r1 := rand.New(s1)
 	return names[r1.Intn(len(names)-1)]
 }
 
-// GetPatronamic - сгенерировать фамилию
+// GetPatronamic - сгенерировать отчество
 func GetPatronamic() string {
 	s1 := rand.NewSource(time.Now().UnixNano())
 	r1 := rand.New(s1)
 	return patronamics[r1.Intn(len(patronamics)-1)]
 }
 
-// GetPhone - сгенерировать фамилию
+// GetPhone - сгенерировать телефон
 func GetPhone() string {
 	s1 := rand.NewSource(time.Now().UnixNano())
 	r1 := rand.New(s1)
 	return phones[r1.Intn(len(phones)-1)]
+}
+
+// RandInt -генерирует случайное целое число
+func RandInt(min int, max int) int {
+    return min + rand.Intn(max-min)
+}
+
+// GetRandomDate - генерируем случайную дату
+func GetRandomDate(minYear int, maxYear int) string{
+	if minYear == 0{
+		minYear = 1970
+	}
+	if maxYear == 0{
+		maxYear = 2070
+	}
+	min := time.Date(minYear, 1, 0, 0, 0, 0, 0, time.UTC).Unix()
+	max := time.Date(maxYear, 1, 0, 0, 0, 0, 0, time.UTC).Unix()
+	delta := max - min
+	
+	sec := rand.Int63n(delta) + min
+	return time.Unix(sec, 0).Format("2006-01-02")
 }

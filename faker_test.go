@@ -3,6 +3,7 @@ package faker
 import (
 	"strconv"
 	"testing"	
+	"time"
 )
 
 func TestGenerateSnils(t *testing.T) {
@@ -119,5 +120,29 @@ func TestGetPhone(t *testing.T) {
 	}
 	if !ex {
 		t.Error("Телефон получен не верно, вернулось значение", phone)
+	}
+}
+
+func TestGetRandomDate(t *testing.T){
+	date := GetRandomDate(0,0)
+
+	pDate, err := time.Parse("2006-01-02", date)
+  	if err != nil {
+		t.Fatal(err)
+  	}
+  	
+	if pDate.Format("2006-01-02") != date{
+		t.Error("Строка не является датой", date)
+	}
+
+	for index := 0; index < 1000; index++ {
+		date := GetRandomDate(2001,2008)
+		pDate, err := time.Parse("2006-01-02", date)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if pDate.Year() < 2001 || pDate.Year() > 2008{
+			t.Error("Дата находится в не верных границах 2001 - 2008", date)
+		}
 	}
 }
